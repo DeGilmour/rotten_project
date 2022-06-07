@@ -6,7 +6,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 import re
 import string
 import joblib
-df = pd.read_csv('rotten_tomatoes_movies.csv', sep=',', parse_dates=True)
+
+
 # df = df.dropna()
 # nltk.download('wordnet')
 # nltk.download('punkt')
@@ -18,17 +19,25 @@ stop_words = set(stopwords.words('english'))
 class PreProcessing:
     def __init__(self):
         self.movies_df = pd.read_csv(
-            'rotten_tomatoes_movies.csv', sep=',', parse_dates=True)
+            'model/rotten_tomatoes_movies.csv', sep=',', parse_dates=True)
 
     def clean_dataset(self):
         self.movies_df['movie_info'] = self.movies_df['movie_info'].fillna('')
         self.movies_df['genres'] = self.movies_df['genres'].fillna('')
+        self.movies_df['actors'] = self.movies_df['actors'].fillna('')
         self.movies_df['genres'] = self.movies_df['genres'].apply(
             self.split_genres)
+        self.movies_df['directors'] = self.movies_df['directors'].fillna('')
+        self.movies_df['tomatometer_rating'] = self.movies_df['tomatometer_rating'].fillna(
+            0)
+        self.movies_df["movie_info"] = self.movies_df['movie_info'].apply(
+            self.clean_movie_info)
+        self.movies_df["combined_features"] = self.movies_df.apply(
+            self.combined_features, axis=1)
         return self.movies_df
-    
+
     def combined_features(self, row):
-        return   row['genres'] + " " + row['movie_info'] + " " + row['directors']
+        return row['genres'] + " " + row['movie_info'] + " " + row['directors']
 
     def split_genres(self, genres):
         genres = [genres]
@@ -56,6 +65,9 @@ class PreProcessing:
 
 
 class MovieRecomender(PreProcessing):
+    
+    def __init__(self):
+        self.movies_df = pd.read_csv('model/cleaned_rotten_ds.csv')
 
     def search_indices(self, indices, movie_name):
         fist_word_pattern = '\d+'
@@ -65,10 +77,8 @@ class MovieRecomender(PreProcessing):
             movie_name_ = movie_name.strip().lower()
             movie_name_to_be_found = i[0].strip().lower()
             if movie_name_ in movie_name_to_be_found:
-                break
                 return real_movie_name
             elif movie_name_ == movie_name_to_be_found:
-                break
                 return real_movie_name
         return real_movie_name
 

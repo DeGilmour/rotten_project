@@ -31,7 +31,8 @@ from nltk.corpus import stopwords
 # nltk.download('stopwords')
 # nltk.download('averaged_perceptron_tagger')
 stop_words = set(stopwords.words('english'))
-nltk.download('omw-1.4')
+# nltk.download('omw-1.4')
+
 
 class PreProcessing:
 
@@ -87,7 +88,7 @@ class PreProcessing:
 
     def augment_dataset(self, n_aug, augment=True):
         if not augment:
-            return 
+            return
         print('Started augmenting data, will augment it {} times'.format(n_aug))
         aug = naw.SynonymAug(aug_src='wordnet', aug_max=5)
         df1 = self.rotten_ds[['movie_title', 'movie_info', 'genre_list']]
@@ -213,4 +214,3 @@ class TestModel(PreProcessing):
         # Inverse transforming the code labels to the string genres
         op = self.multilabel_binarizer.inverse_transform(y_pred)
         return op
-
