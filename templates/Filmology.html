@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <link rel="shortcut icon" type="image/x-icon" href="{{url_for('static', filename='media/assets/FILMOLOGY_F.png')}}"/>
+    <title>Filmology</title>
+    <script src="https://kit.fontawesome.com/f48e6e7627.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" integrity="sha512-kq3FES+RuuGoBW3a9R2ELYKRywUEQv0wvPTItv3DSGqjpbNtGWVdvT8qwdKkqvPzT93jp8tSF4+oN4IeTEIlQA==" crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
+    <!--CSS-->
+    <link  href="{{url_for('static', filename='css/Filmology.css')}}" rel="stylesheet" type="text/css" />
+
+   <script type="text/javascript" src="{{url_for('static', filename='js/genre_predictor.js')}}"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid container">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <a class="navbar-brand" href="#">
+                    <img id="logo" src="{{url_for('static', filename='media/assets/FILMOLOGY_02_B.png')}}" alt="" width="auto" height="20" class="img-fluid d-inline-block align-text-top">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Categorizador</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Recomendador</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Contato</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div class="container">
+                <div class="row">
+                    <div class="col-6 mx-auto my-auto">
+                        <h1 class="">Alfredo, o Detetive</h1>
+                        <h3>O Alfredo advinha o gênero de qualquer filme</h3>
+                        <p class="lh-base fs-5 fw-lighter">
+                            Dentre os diversos talentos do nosso mascote, Alfredo, ele consegue advinhar o gênero de qualquer filme baseado na sinopse. Para testar os conhecimentos dele basta preencher os campos abaixo e nos dizer se ele acertou ou não!
+                        </p>
+                        <br/>
+                        <button id="comecarButton" type="button" class="btn btn-filmology fw-bold fs-3 px-5 py-2" data-bs-toggle="modal" data-bs-target="#genreModal">
+                            Começar
+                        </button>
+                    </div>
+                    <div class="col-6 mx-auto my-auto text-center justify-content-evenly">
+                        <img src="{{url_for('static', filename='media/assets/Chat_Detective_02.png')}}" alt="" width="500px" height="auto" class="d-inline-block">
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="genreModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="genreModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form>
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="genreModalLabel">Qual o gênero desse filme?</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" dismissModal aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body px=auto py-auto">
+                                <label for="movieTittle">Título</label>
+                                <input id="movieTittle" type="text" class="form-control mb-2" placeholder="Título">
+                                <label for="movieSynopsis">Sinopse</label>
+                                <textarea id="movieSynopsis" type="text" class="form-control mb-2" rows="5" placeholder="Sinopse"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" dismissModal data-bs-dismiss="modal">Close</button>
+                                <button id="genreModalButton" type="button" onclick="guessMovie()" class="btn btn-filmology" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#genreResponseModal">Adivinhar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="genreResponseModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="genreResponseModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="genreResponseModalLabel">Qual o gênero desse filme?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" dismissModal aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body px=auto py-auto">
+                            <p class="lh-base fs-5 fw-lighter">
+                                Pelos meus cálculos esse filme parece ser:
+                            </p>
+                            <p id="prediction"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" dismissModal>Close</button>
+                            <button type="button" class="btn btn-filmology" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#genreModal">Tentar Novamente</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="container">
+                <div class="row">
+                    <div class="col-6 mx-auto my-auto">
+                        <h1 class="">Pitacos do Alfredo</h1>
+                        <h3>Deixe que o Alfredo indique um filme pra você!</h3>
+                        <p class="lh-base fs-5 fw-lighter">
+                            Alfredo, nosso mascote, é um ávido explorador da sétima arte. Dê à ele mais informações sobre o que você quer assistir que ele, com certeza, tem uma indicação perfeita para você
+                        </p>
+                        <br/>
+                        <button id="comecarButton2" type="button" class="btn btn-filmology fw-bold fs-3 px-5 py-2" data-bs-toggle="modal" data-bs-target="#recomendationModal">
+                            Começar
+                        </button>
+                    </div>
+                    <div class="col-6 mx-auto my-auto text-center justify-content-evenly">
+                        <img src="{{url_for('static', filename='media/assets/Chat_Director_02.png')}}" alt="" width="500px" height="auto" class="d-inline-block">
+                    </div>
+                </div>
+            </div>
+            <!-- Modal indicador de Filmes -->
+            <div class="modal fade" id="recomendationModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="recomendationModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="recomendationModalLabel">Recomendação</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" dismissModal aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body px=auto py-auto">
+                            <div class="mb-3">
+                                <select id="selectGenre" name="genre" class="form-control">
+                                    <option value="">Selecione um Gênero</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <input name="diretor" class="form-control" type="text" placeholder="Diretor" aria-label="Diretor">
+                            </div>
+                            <div class="input-group mb-3">
+                                <input id="atores" name="atores" a type="text" class="form-control" placeholder="Atores" aria-label="Atores" aria-describedby="button-addon2">
+                                <button id="atoresBtn" class="btn btn-filmology" type="button" id="button-addon2">Adicionar</button>
+                            </div>
+                            <div id="atoresPool" class="mb-3 p-2">
+
+                            </div>
+                            <div class="input-group mb-3">
+                                <input id="movie_title_rec" name="movie_title_rec" a type="text" class="form-control" placeholder="Titulo do Filme" aria-label=""Titulo do Filme" aria-describedby="button-addon2">
+                                <button id="movietitleBtn" class="btn btn-filmology" type="button" id="button-addon2" onclick="recomendMovie()">Pesquisar pelo titulo</button>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-6 align-self-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="notaOpt" id="notaOpt1" value="option1">
+                                        <label class="form-check-label" for="notaOpt1">
+                                            Não ligo pra nota
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="notaOpt" id="notaOpt2" value="option2">
+                                        <label class="form-check-label" for="notaOpt2">
+                                            Aclamado pela Crítica
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="notaOpt" id="notaOpt3" value="option3">
+                                        <label class="form-check-label" for="notaOpt3">
+                                            Aclamado pelo Público
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" dismissModal>Close</button>
+                            <button type="button" class="btn btn-filmology" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#recomendationResponseModal">Recomendar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="recomendationResponseModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="recomendationResponseModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="recomendationResponseModalLabel">Recomendação</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" dismissModal aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body px=auto py-auto">
+                            <p class="lh-base fs-5 fw-lighter" id="rec-movie">
+                                
+                            </p>
+                            <p></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" dismissModal>Close</button>
+                            <button type="button" class="btn btn-filmology" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#recomendationModal">Tentar Novamente</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            <div id="card-div" class="container ">
+                <div class="card-container">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{url_for('static', filename='media/assets/thumb-members/Mands.jpg')}}" class="card-img-top" alt="...">
+                        <div class="card-body position-relative">
+                            <h5 class="card-title">Amanda Couto</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Strategy Director</h6>
+                            <figure>
+                                <blockquote>
+                                    <p class="card-text fst-italic light">The brave may not live forever, but the cautious do not live at all.</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    The Princess Diaries
+                                </figcaption>
+                            </figure>
+                            <div class="position-absolute bottom-0 start-0">
+                                <a href="https://www.linkedin.com/in/amandadcs/" target="_blank" class="btn btn-filmology">Linkedin</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-container">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{url_for('static', filename='media/assets/thumb-members/Anna.jpg')}}" class="card-img-top" alt="...">
+                        <div class="card-body position-relative">
+                            <h5 class="card-title">Anna B. Fatala</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Marketing Director</h6>
+                            <figure>
+                                <blockquote>
+                                    <p class="card-text fst-italic light">"A flor que desabrocha na diversidade é a mais bela de todas"</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    Mulan
+                                </figcaption>
+                            </figure>
+
+                            <div class="position-absolute bottom-0 start-0">
+                                <a href="https://www.linkedin.com/in/anna-beatriz-fatala" target="_blank" class="btn btn-filmology">Linkedin</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-container">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{url_for('static', filename='media/assets/thumb-members/Felipe.jpg')}}"  class="card-img-top" alt="...">
+                        <div class="card-body position-relative">
+                            <h5 class="card-title">Felipe A. Braga</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Software Engineer</h6>
+                            <figure>
+                                <blockquote>
+                                    <p class="card-text fst-italic light">“I don't know half of you half as well as I should like; and I like less than half of you half as well as you deserve.”</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    Bilbo Baggins
+                                </figcaption>
+                            </figure>
+                            <div class="position-absolute bottom-0 start-0">
+                                <a href="https://www.linkedin.com/in/felipe-alves-9bb693174" target="_blank" class="btn btn-filmology">Linkedin</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-container">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{url_for('static', filename='media/assets/thumb-members/Gustavo.jpg')}}" class="card-img-top" alt="...">
+                        <div class="card-body position-relative">
+                            <h5 class="card-title">Gustavo</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Client Services Director</h6>
+                            <figure>
+                                <blockquote>
+                                    <p class="card-text fst-italic light">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    Someone Famous
+                                </figcaption>
+                            </figure>
+                            <div class="position-absolute bottom-0 start-0">
+                                <a href="https://www.linkedin.com/in/gustavo-mendes-santos" target="_blank" class="btn btn-filmology">Linkedin</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-container">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{url_for('static', filename='media/assets/thumb-members/Pedro.jpg')}}"  class="card-img-top" alt="...">
+                        <div class="card-body position-relative">
+                            <h5 class="card-title">Pedro P. Camargo</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Software Engineer</h6>
+                            <figure>
+                                <blockquote>
+                                    <p class="card-text fst-italic light">“Without Knowledge, action is useless and knowledge without action is futile.”</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    Abu Bakr
+                                </figcaption>
+                            </figure>
+                            <div class="position-absolute bottom-0 start-0">
+                                <a href="https://www.linkedin.com/in/pedro-prado-camargo/" target="_blank" class="btn btn-filmology">Linkedin</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-container">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{url_for('static', filename='media/assets/thumb-members/Ricardo.jpg')}}"  class="card-img-top" alt="...">
+                        <div class="card-body position-relative">
+                            <h5 class="card-title">Ricardo A. Lemonache</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Designer, R&D</h6>
+                            <figure>
+                                <blockquote>
+                                    <p class="card-text fst-italic light">"Um homem é aquilo que ele conhece. Conhecimento é poder."</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    Sir Francis Bacon
+                                </figcaption>
+                            </figure>
+                            <div class="position-absolute bottom-0 start-0">
+                                <a href="https://www.linkedin.com/in/ricardo-lemonache-185696155/" target="_blank" class="btn btn-filmology">Linkedin</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-container">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{url_for('static', filename='media/assets/thumb-members/Vine.jpg')}}" class="card-img-top" alt="...">
+                        <div class="card-body position-relative">
+                            <h5 class="card-title">Vinicius</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">QA Manager</h6>
+                            <figure>
+                                <blockquote>
+                                    <p class="card-text fst-italic light">"The strong man defends himself, the stronger defends others"</p>
+                                </blockquote>
+                                <figcaption class="blockquote-footer">
+                                    Boi Ben
+                                </figcaption>
+                            </figure>
+                            <div class="position-absolute bottom-0 start-0">
+                                <a href="https://www.linkedin.com/in/vinicius-r-840b0211b/" target="_blank" class="btn btn-filmology">Linkedin</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bg fixed-bottom">
+        <footer class="footer d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
+            <div class="container">
+                <div class="row">
+                    <p class="col-md-4 text-white my-auto">© 2022 Company, Inc</p>
+
+                    <a href="" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+                        <img id="logo"src="{{url_for('static', filename='media/assets/FILMOLOGY_02_W.png')}}" alt="" width="auto" height="20" class="img-fluid d-inline-block align-text-top">
+                    </a>
+
+                    <ul class="nav col-md-4 justify-content-end">
+                        <li class="nav-item"><a href="#" class="nav-link px-2 text-white">Home</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link px-2 text-white">Features</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link px-2 text-white">About</a></li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
