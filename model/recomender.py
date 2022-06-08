@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import re
 import string
 import joblib
-
+from difflib import SequenceMatcher
 
 # df = df.dropna()
 # nltk.download('wordnet')
@@ -19,9 +19,10 @@ stop_words = set(stopwords.words('english'))
 class PreProcessing:
     def __init__(self):
         self.movies_df = pd.read_csv(
-            'model/rotten_tomatoes_movies.csv', sep=',', parse_dates=True)
+            'rotten_tomatoes_movies.csv', sep=',', parse_dates=True)
 
     def clean_dataset(self):
+        self.get_only_the_best()
         self.movies_df['movie_info'] = self.movies_df['movie_info'].fillna('')
         self.movies_df['genres'] = self.movies_df['genres'].fillna('')
         self.movies_df['actors'] = self.movies_df['actors'].fillna('')
@@ -34,10 +35,18 @@ class PreProcessing:
             self.clean_movie_info)
         self.movies_df["combined_features"] = self.movies_df.apply(
             self.combined_features, axis=1)
+        cleaned_df = self.movies_df[['movie_info', 'genres', 'movie_title',
+                                     'directors', 'tomatometer_count', 'combined_features']].reset_index()
+        joblib.dump(cleaned_df, 'cleaned_df.csv')
+        self.movies_df = cleaned_df
         return self.movies_df
 
     def combined_features(self, row):
-        return row['genres'] + " " + row['movie_info'] + " " + row['directors']
+        return row['genres'] + " " + row['movie_info']
+
+    def get_only_the_best(self, number_of_best=2000):
+        self.movies_df = self.movies_df.nlargest(number_of_best, columns=[
+                                                 'audience_rating', 'tomatometer_rating', 'tomatometer_top_critics_count', 'audience_count'])
 
     def split_genres(self, genres):
         genres = [genres]
@@ -65,22 +74,28 @@ class PreProcessing:
 
 
 class MovieRecomender(PreProcessing):
-    
     def __init__(self):
-        self.movies_df = pd.read_csv('model/cleaned_rotten_ds.csv')
+        self.movies_df = joblib.load('model/cleaned_df.csv')
 
     def search_indices(self, indices, movie_name):
         fist_word_pattern = '\d+'
         match = ""
         for i in indices.iteritems():
             real_movie_name = i[0]
-            movie_name_ = movie_name.strip().lower()
-            movie_name_to_be_found = i[0].strip().lower()
-            if movie_name_ in movie_name_to_be_found:
+            movie_name_ = movie_name.lower().replace(' ', '')
+            movie_name_to_be_found = i[0].lower().replace(' ', '')
+            # print("{}, {}".format(movie_name_, movie_name_to_be_found))
+            if movie_name_ == movie_name_to_be_found:
+                print(real_movie_name)
                 return real_movie_name
-            elif movie_name_ == movie_name_to_be_found:
+            elif self.similar(movie_name_, movie_name_to_be_found) >= 0.8:
+                print(real_movie_name)
                 return real_movie_name
-        return real_movie_name
+            elif movie_name_ in movie_name_to_be_found:
+                return real_movie_name
+
+    def similar(self, a, b):
+        return SequenceMatcher(None, a, b).ratio()
 
     def get_similar_movies(self, movie_title, indices, cos_sim):
         try:
@@ -102,60 +117,37 @@ class MovieRecomender(PreProcessing):
         sim_scores = list(enumerate(cos_sim[curr_index]))
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
         # Spliting to take the 10 most similars
-        sim_scores = sim_scores[1:20]
+        sim_scores = sim_scores[1:7]
 
         movie_indices = [i[0] for i in sim_scores]
-        return self.movies_df[['movie_title', 'genres', 'actors', 'directors']].iloc[movie_indices]
+        return self.movies_df[['movie_title', 'genres', 'directors']].iloc[movie_indices]
 
     def find_movies_calculate(self, movie_title):
-
         tf_idf_vectorizer_object = TfidfVectorizer(
             stop_words='english', analyzer=self.clean_movie_info)
-
+        self.movies_df = self.movies_df.fillna(' ')
         tf_idf_matrix = tf_idf_vectorizer_object.fit_transform(
-            self.movies_df['movie_info'])
+            self.movies_df['combined_features'])
 
         cos_sim = cosine_similarity(tf_idf_matrix, tf_idf_matrix)
         joblib.dump(cos_sim, 'cos_sim.pkl')
         title_to_index = pd.Series(
             self.movies_df.index, index=self.movies_df['movie_title']).drop_duplicates()
 
-        tf_idf_matrix_genres = tf_idf_vectorizer_object.fit_transform(
-            self.movies_df['genres'])
+        cos_sim = cosine_similarity(
+            tf_idf_matrix, tf_idf_matrix)
 
-        cos_sim_genres = cosine_similarity(
-            tf_idf_matrix_genres, tf_idf_matrix_genres)
-        joblib.dump(cos_sim_genres, 'cos_sim_genres.pkl')
-        title_to_index_genres = pd.Series(
-            self.movies_df.index, index=self.movies_df['genres']).drop_duplicates()
-
-        # self.movies_df['directors'] = self.movies_df['directors'].fillna('')
-
-        # tf_idf_matrix_directors= tf_idf_vectorizer_object.fit_transform(self.movies_df['directors'])
-
-        # cos_sim_directors= cosine_similarity(tf_idf_matrix_directors, tf_idf_matrix_directors)
-
-        # title_to_index_directors = pd.Series(self.movies_df.index, index=self.movies_df['directors']).drop_duplicates()
-
-        cos_sim = cos_sim + cos_sim_genres
-
-        res = pd.concat([title_to_index, title_to_index_genres])
-
+        joblib.dump(cos_sim, 'cos_sim_final.pkl')
         print('Movies similar to ' + movie_title + ' are:')
         similar_movies = self.get_similar_movies(
-            movie_title=movie_title, indices=res, cos_sim=cos_sim)
+            movie_title=movie_title, indices=title_to_index, cos_sim=cos_sim)
         similar_movies = pd.DataFrame(similar_movies)
         return similar_movies
 
     def find_movies(self, movie_title):
-        cos_sim = joblib.load('cos_sim.pkl')
         title_to_index = pd.Series(
             self.movies_df.index, index=self.movies_df['movie_title']).drop_duplicates()
-        cos_sim_genres = joblib.load('cos_sim_genres.pkl')
-        # title_to_index_genres = pd.Series(self.movies_df.index, index=self.movies_df['genres']).drop_duplicates()
-        cos_sim = cos_sim + cos_sim_genres
-        # res = pd.concat([title_to_index, title_to_index_genres])
-        print('Movies similar to ' + movie_title + ' are:')
+        cos_sim = joblib.load('model/cos_sim_final.pkl')
         similar_movies = self.get_similar_movies(
             movie_title=movie_title, indices=title_to_index, cos_sim=cos_sim)
         similar_movies = pd.DataFrame(similar_movies)

@@ -32,8 +32,8 @@ def get_alredos_recomendation():
     # cleaned = pre_pro.clean_dataset()
     # cleaned.to_csv('cleaned_rotten_ds.csv')
     movie_recomender = MovieRecomender()
-    movie_recomender.find_movies_calculate(movie_title)
-    return {"prediction": "The movie {} seens to be ".format(movie_title)}
+    recomendation = movie_recomender.find_movies(movie_title)
+    return {"recomendation": recomendation}
 
 
 def clean_prediction(prediction: list):

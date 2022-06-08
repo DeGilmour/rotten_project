@@ -50,7 +50,9 @@ function guessMovieCall(data) {
 function recomendMovieCall(data) {
 	let rec_movie = document.getElementById("rec-movie");
 	console.log(data)
-	rec_movie.innerHTML = data['prediction']
+	rec_movie.innerHTML = data['recomendation']
+    let data_frame = document.getElementsByClassName('dataframe')
+    data_frame[0].classList.add('table')
 }
 
 
